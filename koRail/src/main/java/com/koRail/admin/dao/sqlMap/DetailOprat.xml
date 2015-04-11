@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQLMap 2.0//EN"
+	    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	    
+<sqlMap namespace="DetailOprat">
+	<!-- 상세운행 -->
+	<resultMap class="com.koRail.admin.to.DetailOpratBean" id="detailOpratResultMap">
+	    <result property="detailOpratCode" column="DETAIL_OPRAT_CODE" />
+	    <result property="opratCode" column="OPRAT_CODE" />
+	    <result property="startStatnCode" column="START_STATN_CODE" />
+	    <result property="startStatnValue" column="START_STATN_VALUE" />
+	    <result property="arvlStatnCode" column="ARVL_STATN_CODE" />
+	    <result property="arvlStatnValue" column="ARVL_STATN_VALUE" />
+	    <result property="startTm" column="START_TM" />
+	    <result property="arvlTm" column="ARVL_TM" />
+	    <result property="prvStatnCode" column="PRV_STATN_CODE" />
+	    <result property="prvStatnValue" column="PRV_STATN_VALUE" />
+	    <result property="nxtStatnCode" column="NXT_STATN_CODE" />
+	    <result property="nxtStatnValue" column="NXT_STATN_VALUE" />
+	    <result property="prvDistnc" column="PRV_DISTNC" />
+	    <result property="nxtDistnc" column="NXT_DISTNC" />
+	</resultMap>
+	
+  	<!-- 상세운행 조회 -->
+  	<procedure id="selectDetailOprat" resultMap="detailOpratResultMap">
+  	    SELECT	DETAIL_OPRAT_CODE									/*상세운행코드*/,
+		        OPRAT_CODE											/*운행코드*/,
+		        START_STATN_CODE									/*출발역코드*/,
+		        START_STATN_VALUE									/*출발역코드 값*/,
+		       	ARVL_STATN_CODE										/*도착역코드*/,
+		        ARVL_STATN_VALUE									/*도착역코드 값*/,
+		        TO_CHAR(START_TM, 'YYYY-MM-DD HH24:MI') AS START_TM	/*출발시각*/,
+		        TO_CHAR(ARVL_TM, 'YYYY-MM-DD HH24:MI') AS	ARVL_TM	/*도착시각*/,
+		        PRV_STATN_CODE										/*이전역코드*/,
+		        NVL(PRV_STATN_VALUE, '--') AS PRV_STATN_VALUE		/*이전역코드 값*/,
+		        NXT_STATN_CODE										/*다음역코드*/,
+		        NVL(NXT_STATN_VALUE, '--') AS NXT_STATN_VALUE		/*다음역코드 값*/,
+		        NVL(TO_CHAR(PRV_DISTNC), '--') AS PRV_DISTNC		/*이전역거리*/,
+			    NVL(TO_CHAR(NXT_DISTNC), '--') AS NXT_DISTNC		/*다음역거리*/
+		FROM TABLE(
+			PK_ADMIN_OPRAT.FN_SLT_DETAIL_OPRAT(#OPRAT_CODE,mode=IN#)
+		)
+		
+		/**********************************************************
+	    * 이름		: FN_SLT_DETAIL_OPRAT
+	    * 설명		: 상세운행일정 조회 함수
+	    * 파라미터	: 운행코드
+	    **********************************************************/
+  	</procedure>
+  	
+  	<!-- 상세운행정보 등록 -->
+  	<insert id="insertDetailOprat" parameterClass="com.koRail.admin.to.DetailOpratBean">
+		INSERT INTO DETAIL_OPRAT(
+			DETAIL_OPRAT_CODE	/*상새운행코드*/,
+			OPRAT_CODE			/*운행코드*/,
+			START_STATN			/*츨발역*/,
+			ARVL_STATN			/*도착역*/,
+			START_TM			/*출발시각*/,
+			ARVL_TM				/*도착시각*/,
+			PRV_STATN			/*이전역*/,
+			NXT_STATN			/*다음역*/,
+			PRV_DISTNC			/*이전역거리*/,
+			NXT_DISTNC			/*다음역거리*/,
+			REGISTER			/*등록자*/,
+			RGSDE				/*등록일*/
+		) VALUES(
+			(
+            	SELECT 'DETAIL_OPRAT_CODE_'|| NVL(
+										MAX(
+											REGEXP_SUBSTR(DETAIL_OPRAT_CODE, '[^_]+', 1, 4)+1
+										), 1
+									)
+				FROM DETAIL_OPRAT
+			),
+            (
+            	SELECT 'OPRAT_CODE_'|| NVL(
+            		MAX(
+            			TO_NUMBER(
+            				REGEXP_SUBSTR(
+            					OPRAT_CODE, '[^_]+', 1, 3)
+            				)
+            			)
+            		, 0)
+				FROM OPRAT
+			),
+            #startStatnCode#,
+           	#arvlStatnCode#,
+            TO_DATE(#startTm#, 'YYYY-MM-DD HH24:MI'),
+            TO_DATE(#arvlTm#, 'YYYY-MM-DD HH24:MI'),
+            #prvStatnCode#,
+            #nxtStatnCode#,
+            TO_NUMBER(#prvDistnc#),
+            TO_NUMBER(#nxtDistnc#),
+            #register#,
+            SYSDATE
+        )
+  	</insert>
+  	
+  	<!-- 상세운행정보 삭제 -->
+  	<delete id="deleteDetailOprat" parameterClass="String">
+  	    DELETE FROM DETAIL_OPRAT WHERE DETAIL_OPRAT_CODE = #detailOpratCode#
+  	</delete>
+</sqlMap>
