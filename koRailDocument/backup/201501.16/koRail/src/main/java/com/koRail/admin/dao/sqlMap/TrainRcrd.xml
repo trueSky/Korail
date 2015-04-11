@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQLMap 2.0//EN"
+	    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	    
+<sqlMap namespace="TrainRcrd">
+	<resultMap class="com.koRail.admin.to.TrainRcrdBean" id="trainRcrdResultMap">
+	    <result property="resveCode" column="RESVE_CODE" />
+	    <result property="trainKnd" column="TRAIN_KND" />
+	    <result property="rgsde" column="RGSDE" />
+	    <result property="register" column="REGISTER" />
+	    <result property="eldrlyCo" column="ELDRLY_CO" />
+	    <result property="dspsnCo" column="DSPSN_CO" />
+	    <result property="chldCo" column="CHLD_CO" />
+	    <result property="resveCo" column="RESVE_CO" />
+	    <result property="allFrAmount" column="ALL_FR_AMOUNT" />
+	    <result property="setelSttus" column="SETLE_STTUS" />
+	    <result property="usePint" column="USE_PINT" />
+	    <result property="dscntAmount" column="DSCNT_AMOUNT" />
+	    <result property="setleAmount" column="SETLE_AMOUNT" />
+		<result property="seatList" column="RESVE_CODE" select="DetailResve.selectSeatList"/>
+	</resultMap>
+	
+  	<!-- 승차권 발권 현황 -->
+  	<select id="selectTrainRcrdList" resultMap="trainRcrdResultMap">
+		SELECT	RESVE_CODE										/* 예약코드 */, 
+				TRAIN_KND										/* 열차종류 */,
+				TO_CHAR(RGSDE, 'YYYY-MM-DD HH24:MI') AS RGSDE	/* 예매일자 */,
+				REGISTER										/* 예예약자명 */,
+				RESVE_CO										/* 총 인원수 */, 
+				ELDRLY_CO										/* 경로우대 대상자 */,
+				DSPSN_CO										/* 장애인 */, 
+				CHLD_CO											/* 어린이 수 */,
+				REPLACE(
+					TO_CHAR(
+						ALL_FR_AMOUNT, 'FM9,999,999,999'
+					),
+					' ',
+					''
+				) AS ALL_FR_AMOUNT								/* 영수금액 */, 
+				PK_CMMN.TO_CODE_VALUE(
+					'CMMN_CODE',
+					SETLE_STTUS
+				) AS SETLE_STTUS								/* 결제상태 */, 
+				REPLACE(
+					TO_CHAR(
+						USE_PINT, 'FM9,999,999,999'
+					),
+					' ',
+					''
+				) AS USE_PINT									/* 사용포인트 */,
+				REPLACE(
+					TO_CHAR(
+						DSCNT_AMOUNT, 'FM9,999,999,999'
+					),
+					' ',
+					''
+				) AS DSCNT_AMOUNT								/* 할인금액 */,
+				REPLACE(
+					TO_CHAR(
+						SETLE_AMOUNT, 'FM9,999,999,999'
+					),
+					' ',
+					''
+				) AS SETLE_AMOUNT								/* 결제금액 */
+		FROM TABLE(
+			PK_ADMIN_RCRD.FN_SLT_TRAIN_RCRD(
+				#srcType,mode=IN#
+			) 
+		)
+		WHERE TO_CHAR(RGSDE, 'YYYY-MM-DD') >= #srcDate1#
+       	AND	  TO_CHAR(RGSDE, 'YYYY-MM-DD') &lt;= #srcDate2#
+		ORDER BY RGSDE DESC
+		
+		/*******************************************************************
+    	* 이름    : FN_SLT_TRAIN_RCRD
+    	* 설명    : 열차별 승객 현황
+	    * 파라미터: 열차종류
+	    ******************************************************************/
+  	</select>
+</sqlMap>

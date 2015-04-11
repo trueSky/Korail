@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQLMap 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="Addr">
+	<!-- 주소검색 -->
+	<select id="selectAddrList" resultClass="com.koRail.common.to.AddrBean" parameterClass="String">
+		SELECT	TO_CHAR(ZIP_CODE, '999,999') AS zipCode,
+				SD || ' ' || SGG || ' ' || '' || UMD || ' ' || RI AS addr
+		FROM	ADDR
+		WHERE	UMD = #umd#
+	</select>
+</sqlMap>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQLMap 2.0//EN"
+	    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	    
+<sqlMap namespace="Setle">
+	<parameterMap id="setleParameterMap" class="com.koRail.member.to.SetleBean">
+		<parameter property="resveCode" mode="IN" />
+		<parameter property="id" mode="IN" />
+		<parameter property="cardSe" mode="IN" />
+		<parameter property="cardKnd" mode="IN" />
+		<parameter property="cardNo" mode="IN" />
+		<parameter property="valIdPd" mode="IN" />
+		<parameter property="instlmt" mode="IN" />
+		<parameter property="scrtyCadrNo" mode="IN" />
+		<parameter property="ihidnum" mode="IN" />
+		<parameter property="usePint" mode="IN" />
+		<parameter property="pintUseYN" mode="IN" />
+		<parameter property="frAmount" mode="IN" />
+		<parameter property="dscntAmount" mode="IN" />
+		<parameter property="setleAmount" mode="IN" />
+		<parameter property="register" mode="IN" />
+		<parameter property="rtCode" mode="OUT" jdbcType="VARCHAR"/>
+		<parameter property="rtMsg" mode="OUT" jdbcType="VARCHAR"/>
+	</parameterMap>
+
+	<!-- 결제 -->
+	<procedure id="insertSetle" parameterMap="setleParameterMap">
+		{ CALL PK_MEMBER_SETLE.SP_IST_SETLE(
+			?, ?, ?, ?, ?, ?,
+			?, ?, ?, ?, ?, ?,
+			?, ?, ?, ?, ?
+		) }
+	</procedure>
+</sqlMap>

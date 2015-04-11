@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQLMap 2.0//EN"
+	    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	    
+<sqlMap namespace="SeatNo">
+	<!-- 예액된 좌석 조회 -->
+  	<select id="selectSeatNoList" parameterClass="com.koRail.common.to.RoomBean" resultClass="com.koRail.member.to.SeatNoInfoBean">
+		SELECT	D.ROOM AS room		/* 호실 */,
+				D.SEAT_NO AS seatNo /* 좌석번호 */
+		FROM 	OPRAT A				/* 운행 */, 
+				RESVE B				/* 예약 */, 
+				ROOM C				/* 호실 */,
+				DETAIL_RESVE D		/* 상세예약 */
+		WHERE	A.OPRAT_CODE = B.OPRAT_CODE 
+       	AND		A.OPRAT_CODE = C.OPRAT_CODE
+       	AND		B.RESVE_CODE = d.RESVE_CODE
+       	AND 	A.OPRAT_CODE = #opratCode#
+       	AND 	C.PRTCLR_ROOM_YN = #prtclrRoomYN#
+  	</select>	
+</sqlMap>

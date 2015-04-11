@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQLMap 2.0//EN"
+	    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	    
+<sqlMap namespace="Pint">
+	<!-- 포인트 사용내역 -->
+	<resultMap id="pintInfoResultMap" class="com.koRail.member.to.PintBean">
+		<result property="useDe" column="USE_DE"/>
+		<result property="pintUseYn" column="PINT_USE_YN"/>
+		<result property="useHistry" column="USE_HISTR"/>
+		<result property="setleAmount" column="SETLE_AMOUNT"/>
+		<result property="usePint" column="USE_PINT"/>
+		<result property="svPint" column="SV_PINT"/>
+	</resultMap>
+	
+	<!-- 포인트 조회 -->
+	<select id="selectPint" resultClass="com.koRail.member.to.PintBean" parameterClass="String">
+		SELECT	NVL(TO_CHAR(SUM(SV_PINT), 'FM9,999,999,999'), 0) AS svPint		/*총 정립포인트*/, 
+				NVL(TO_CHAR(ALL_USE_PINT, 'FM9,999,999,999'), 0) AS allUsePint	/*총 사용포인트*/, 
+				NVL(TO_CHAR(TDY_PINT, 'FM9,999,999,999'), 0) AS tdyPint			/*현재 포인트*/ 
+		FROM	PINT 
+		WHERE	ID = #id# 
+		GROUP BY	ALL_USE_PINT, 
+					TDY_PINT
+	</select>
+	
+	<!-- 사용가능 포인트 조회 -->
+	<select id="selectTdyPint" resultClass="String" parameterClass="String">
+		SELECT 		TO_CHAR(TDY_PINT, 'FM99,999,999,999') 
+		FROM 		PINT 
+		GROUP BY 	TDY_PINT, 
+					ID 
+		HAVING ID = #id#
+	</select>
+	
+	<!-- 포인트 사용내역 -->
+	<select id="selectPintInfoList" resultMap="pintInfoResultMap" parameterClass="com.koRail.common.to.CommonBean">
+		SELECT	TO_CHAR(A.USE_DE, 'YYYY-MM-DD') AS USE_DE					/*사용일자*/, 
+				CASE D.PINT_USE_YN
+					WHEN 'Y' THEN '사용'
+					ELSE '미사용'
+				END AS PINT_USE_YN											/*포인트사용여부*/,
+				A.USE_HISTR													/*사용내역*/, 
+				TO_CHAR(D.SETLE_AMOUNT, 'FM9,999,999,999') AS SETLE_AMOUNT	/*결제금액*/, 
+				TO_CHAR(D.USE_PINT, 'FM9,999,999,999') AS USE_PINT			/*사용포인트*/, 
+				TO_CHAR(A.SV_PINT, 'FM9,999,999,999') AS SV_PINT			/*정립포인트*/ 
+		FROM	PINT A						/*포인트*/, 
+				RESVE B						/*예약*/, 
+				OPRAT C						/*운행*/, 
+				SETLE D						/*결제*/ 
+ 		WHERE	A.PINT_CODE = D.PINT_CODE 
+		AND		B.RESVE_CODE = D.RESVE_CODE 
+		AND		C.OPRAT_CODE = B.OPRAT_CODE 
+		GROUP BY	A.USE_DE				/*사용일자*/, 
+					D.PINT_USE_YN			/*포인트사용여부*/,
+					A.USE_HISTR				/*사용내역*/, 
+					D.SETLE_AMOUNT			/*결제금액*/, 
+					D.USE_PINT				/*사용포인트*/, 
+					A.SV_PINT				/*정립포인트*/, 
+					D.ID					/*아이디*/,
+					C.START_TM				/*출발시각*/,
+					C.ARVL_TM				/*도착시각*/
+		HAVING	D.ID = #srcType#
+		<isNull property="formType">
+			AND		TO_CHAR(C.START_TM, 'YYYY-MM-DD') >= #srcDate1#
+			AND		TO_CHAR(C.ARVL_TM, 'YYYY-MM-DD') &lt;= #srcDate2#
+		</isNull>
+		<isNotNull property="formType">
+			AND		TO_CHAR(C.START_TM, 'YYYY-MM') = #srcDate1#
+		</isNotNull>
+		ORDER BY A.USE_DE DESC
+	</select>
+</sqlMap>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQLMap 2.0//EN"
+	    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	    
+<sqlMap namespace="Room">
+	<resultMap class="com.koRail.admin.to.RoomBean" id="roomResultMap">
+	    <result property="roomCode" column="ROOM_CODE" />
+	    <result property="opratCode" column="OPRAT_CODE" />
+	    <result property="room" column="ROOM" />
+	    <result property="seatCo" column="SEAT_CO" />
+	    <result property="prtclrRoomYN" column="PRTCLR_ROOM_YN" />
+	</resultMap>
+	
+  	<!-- 호실 조회 -->
+  	<select id="selectRoom" resultMap="roomResultMap">
+  	    SELECT	ROOM_CODE		/*호실코드*/,
+				OPRAT_CODE		/*운행코드*/,
+				ROOM			/*호실*/,
+				SEAT_CO			/*좌석수*/,
+				PRTCLR_ROOM_YN	/*특실여부 : Y, N*/
+		FROM	ROOM			/*호실*/
+		WHERE	OPRAT_CODE = #OPRAT_CODE#
+  	</select>
+  	
+  	<!-- 호실 등록 -->
+  	<insert id="insertRoom" parameterClass="com.koRail.admin.to.RoomBean">
+		INSERT INTO ROOM(
+  	    	ROOM_CODE		/*호실코드*/,
+			OPRAT_CODE		/*운행종류*/,
+			ROOM			/*호실*/,
+            SEAT_CO			/*좌석수*/,
+            PRTCLR_ROOM_YN	/*특실여부: Y, N*/
+		) VALUES(
+			(
+				SELECT 'ROOM_CODE_'|| NVL(
+										MAX(
+											REGEXP_SUBSTR(ROOM_CODE, '[^_]+', 1, 3)+1
+										), 1
+									)
+				FROM ROOM
+			),
+            (SELECT	MAX(OPRAT_CODE)	FROM OPRAT),
+            TO_NUMBER(#room#),
+            TO_NUMBER(#seatCo#),
+            #prtclrRoomYN#
+        )  
+  	</insert>
+  	
+  	<!-- 호실 삭제 -->
+  	<delete id="deleteRoom" parameterClass="String">
+  	    DELETE FROM ROOM WHERE ROOM_CODE = #roomCode#
+  	</delete>
+  	
+  	<!-- 운행정보에 대한 모든 호실 삭제 -->
+  	<delete id="deleteRoomAll" parameterClass="String">
+  	    DELETE FROM ROOM WHERE OPRAT_CODE = #opratCode#
+  	</delete>
+</sqlMap>
