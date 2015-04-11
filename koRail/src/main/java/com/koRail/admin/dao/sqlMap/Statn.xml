@@ -25,7 +25,7 @@
 				)	AS AREA_NAME											/*지역 명*/,
 				STATN_NM													/*역 명*/,
 				NVL(REGISTER, '--')							  	AS REGISTER	/*등록자*/,
-              	NVL(UPD_USER, '--')							  	AS UPDUSR	/*수정자*/,
+              	NVL(UPDUSR, '--')							  	AS UPDUSR	/*수정자*/,
         		NVL(TO_CHAR(RGSDE, 'YYYY-MM-DD HH24:MI'), '--') AS RGSDE 	/*수정일*/,
 	        	NVL(TO_CHAR(UPDDE, 'YYYY-MM-DD HH24:MI'), '--') AS UPDDE	/*수정일*/
         FROM	TABLE(
@@ -69,7 +69,7 @@
   	    UPDATE	STATN
   	    SET		AREA_CODE = #areaCode#	/*역 코드*/,
   	    		STATN_NM = #statnNm#	/*역 명*/,
-  	    		UPD_USER = #updUsr#	/*수정자*/,
+  	    		UPDUSR = #updUsr#		/*수정자*/,
   	    		UPDDE = SYSDATE			/*수정일*/
   	    WHERE	STATN_CODE = #statnCode#
   	</update>
