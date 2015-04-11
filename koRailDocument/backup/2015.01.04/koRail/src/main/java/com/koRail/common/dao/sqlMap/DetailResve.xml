@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQLMap 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="DetailResve">
+	<!-- 예약에 대한 좌석정보 -->
+	<resultMap class="com.koRail.common.to.DetailResveBean" id="seatResultMap">
+		<result property="detailResveCode" column="DETAIL_RESVE_CODE"/>
+		<result property="resveCode" column="RESVE_CODE"/>
+		<result property="roomKndCode" column="ROOM_KND_CODE"/>
+		<result property="roomKndValue" column="ROOM_KND_VALUE"/>
+		<result property="seatNo" column="SEAT_NO"/>
+		<result property="room" column="ROOM"/>
+	</resultMap>
+	
+	<!-- 결제할 예매 정보 -->
+	<resultMap class="com.koRail.common.to.DetailResveBean" id="detailResveResultMap">
+		<result property="detailResveCode" column="DETAIL_RESVE_CODE"/>
+		<result property="roomKndValue" column="ROOM_KND"/>
+		<result property="seatNo" column="SEAT_NO"/>
+		<result property="room" column="ROOM"/>
+		
+		<result property="psngrKndValue" column="PSNGR_KND"/>
+		<result property="frAmount" column="FR_AMOUNT"/>
+		<result property="dscntAmount" column="DSCNT_AMOUNT"/>
+		<result property="rcptAmount" column="RCPT_AMOUNT"/>
+		<result property="psngrNm" column="PSNGR_NM"/>
+	</resultMap>
+	
+	<!-- 예약에 대한 좌석정보 -->
+	<select id="selectSeatList" resultMap="seatResultMap">
+		SELECT	B.DETAIL_RESVE_CODE, 
+				B.RESVE_CODE, 
+				B.ROOM_KND AS ROOM_KND_CODE, 
+				PK_CMMN.TO_CODE_VALUE('CMMN_CODE', B.ROOM_KND) AS ROOM_KND_VALUE, 
+				B.SEAT_NO, 
+				B.ROOM 
+		FROM	RESVE A, 
+				DETAIL_RESVE B 
+		WHERE	A.RESVE_CODE = B.RESVE_CODE 
+		AND		B.RESVE_CODE = #RESVE_CODE#
+	</select>
+	
+	<!-- 상세예약 등록 -->
+	<procedure id="insertDetailResve" parameterClass="com.koRail.common.to.DetailResveBean">
+		{ CALL PK_MEMBER_RESVE.SP_IST_DEATIL_RESVE(
+			#roomKndCode,mode=IN#,
+			#seatNo,mode=IN#,
+			#psngrKndCode,mode=IN#,
+			#dspsnGradCode,mode=IN#,
+			#room,mode=IN#,
+			#frAmount,mode=IN#,
+			#code,mode=OUT,jdbcType=VARCHAR#,
+			#rtCode,mode=OUT,jdbcType=VARCHAR#,
+			#rtMsg,mode=OUT,jdbcType=VARCHAR#
+		) }
+		
+		/*******************************************************************
+	    * 이름		: SP_IST_DEATIL_RESVE
+	    * 설명		: 상세예약 등록
+	    * 파라미터	: 객실유형, 좌석번호, 승객유형, 장애인등급, 호실, 운임금액
+	    			  리턴할 예약 코드, 에러 코드(0 : 성공, 1 : 에러), 에러 메세지
+	    ******************************************************************/
+	</procedure>
+	
+	<!-- 예매에 대한 상세예약 정보 -->
+	<select id="selectDetailResveList" resultMap="detailResveResultMap" parameterClass="String">
+		SELECT	B.DETAIL_RESVE_CODE													/*상세예약코드*/, 
+				PK_CMMN.TO_CODE_VALUE('CMMN_CODE', B.ROOM_KND)		AS ROOM_KND		/*호실유형*/,
+				B.SEAT_NO															/*좌석번호*/, 
+				B.ROOM																/*호실*/,
+				CASE B.PSNGR_KND
+                	WHEN 'PSNGR_3' THEN PK_CMMN.TO_CODE_VALUE('CMMN_CODE', B.DSPSN_GRAD)
+                    ELSE PK_CMMN.TO_CODE_VALUE('CMMN_CODE', B.PSNGR_KND)
+                END													AS PSNGR_KND	/*승객유형 : 장애인(급수), 일반, 경로, 어린이*/,
+				TO_CHAR(B.FR_AMOUNT, 'FM9,999,999,999')				AS FR_AMOUNT	/*운임금액*/,
+				NVL(TO_CHAR(B.DSCNT_AMOUNT, 'FM9,999,999,999'), 0)	AS DSCNT_AMOUNT	/*할인금액*/,
+				TO_CHAR(B.RCPT_AMOUNT, 'FM9,999,999,999')			AS RCPT_AMOUNT	/*영수금액*/,
+				B.PSNGR_NM															/*승차자명*/
+		FROM	RESVE A, 
+				DETAIL_RESVE B 
+		WHERE	A.RESVE_CODE = B.RESVE_CODE
+		AND		A.RESVE_CODE = #RESVE_CODE#
+		ORDER BY B.SEAT_NO
+	</select>
+</sqlMap>

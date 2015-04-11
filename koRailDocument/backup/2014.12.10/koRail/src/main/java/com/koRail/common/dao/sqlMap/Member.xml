@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQLMap 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="Member">
+	<resultMap class="com.koRail.common.to.MemberBean" id="memberResultMap">
+		<result property="id" column="ID"/>
+		<result property="nm" column="NM"/>
+		<result property="zipCode" column="ZIP_CODE"/>
+		<result property="addrs" column="ADRES"/>
+		<result property="detailAddrs" column="DETAIL_ADRES"/>
+		<result property="telNo" column="TELNO"/>
+		<result property="mbtlnum" column="MBTLNUM"/>
+		<result property="emal" column="EMAIL"/>
+		<result property="gndr" column="GNDR"/>
+		<result property="rgsde" column="RGSDE"/>
+		<result property="updde" column="UPDDE"/>
+	</resultMap>
+
+	<!-- 공통 SQL -->
+	<sql id="memberTmp">
+		SELECT	ID															/* 아이디 */,
+				NM															/* 성명 */,
+				TO_CHAR(ZIP_CODE, '999,999') 					AS ZIP_CODE /* 우편번호 */,
+				ADRES 														/* 주소 */,
+				DETAIL_ADRES 												/* 상세주소 */,
+				NVL(TELNO, '--') 								AS TELNO	/* 전화번호 */,
+				NVL(MBTLNUM, '--') 								AS MBTLNUM	/* 휴대전화번호 */,
+				NVL(EMAIL, '--') 								AS EMAIL	/* 이메일 */,
+				CASE 
+                	WHEN GNDR = 0 THEN '남'
+                    WHEN GNDR = 1 THEN '여'
+              	END												AS	GNDR	/* 성별 */,
+				TO_CHAR(RGSDE, 'YYYY-MM-DD HH24:MI') 			AS RGSDE	/* 가입일 */,
+				NVL(TO_CHAR(UPDDE, 'YYYY-MM-DD HH24:MI'), '--') AS UPDDE	/* 개인정보 수정일 */
+		FROM	MEMBER
+	</sql>
+
+	<!-- 회원 조회 -->
+	<select id="selectMember" resultMap="memberResultMap" parameterClass="com.koRail.common.to.MemberBean">
+		<include refid="memberTmp"/>
+		<isEqual property="srcType" compareValue="id">
+			WHERE ID LIKE '%' || #srcText# || '%'
+		</isEqual>
+		<isEqual property="srcType" compareValue="nm">
+			WHERE NM LIKE '%' || #srcText# || '%'
+		</isEqual>
+		<isEqual property="srcType" compareValue="rgsde">
+			WHERE RGSDE >= TO_DATE(#srcDate1#, 'YYYY-MM-DD')
+        	AND	  RGSDE &lt;= TO_DATE(#srcDate2#, 'YYYY-MM-DD')
+		</isEqual>
+		<isEqual property="srcType" compareValue="updde">
+			WHERE UPDDE >= TO_DATE(#srcDate1#, 'YYYY-MM-DD')
+        	AND	  UPDDE &lt;= TO_DATE(#srcDate2#, 'YYYY-MM-DD')
+		</isEqual>
+	</select>
+	
+	<!-- 회원 삭제 -->
+	<delete id="deleteMember" parameterClass="String">
+		DELETE FROM MEMBER WHERE ID = #id#
+	</delete>
+</sqlMap>
