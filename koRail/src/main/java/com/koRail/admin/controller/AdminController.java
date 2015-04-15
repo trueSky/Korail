@@ -24,7 +24,7 @@ import com.koRail.common.to.CommonBean;
 import com.koRail.common.to.MemberBean;
 
 @Controller(value="adminController")
-@RequestMapping(value="/admin/")
+@RequestMapping(value="admin")
 public class AdminController extends CommonController {
 		
 	@Resource(name="commonService")

@@ -2,13 +2,21 @@ package com.koRail.common.aspect;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 
 @Aspect
 public class LoggingAspect {
 	protected Log logger = null;
+	
+	@Before("execution(* com..controller.*.*(..))")
+	public void doTest(JoinPoint joinPoint){
+		System.out.println(joinPoint.getClass().getName());
+		
+	}
 	
 	/**********************
 	 * service logging
@@ -79,8 +87,6 @@ public class LoggingAspect {
 				
 				logger.debug("파라미터: " + argsValue);
 			}
-		}else if(logger.isInfoEnabled()){
-			logger.info("---------------------------------------------------------------------");
 		}
 		
 		// 타겟 클레스의 메서드
@@ -89,8 +95,6 @@ public class LoggingAspect {
 		if (logger.isDebugEnabled()) {
 			logger.debug(className + "." + joinPoint.getSignature().getName() + "()"+ " 종료");
 			logger.debug("---------------------------------------------------------------------");
-		}else if(logger.isInfoEnabled()){
-			logger.info("---------------------------------------------------------------------");
 		}
 		
 		return retVal;

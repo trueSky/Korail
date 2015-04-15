@@ -36,7 +36,6 @@ import com.koRail.common.util.MenuTree;
  * @author Administrator
  **********************************************************/
 @Controller(value="CommonController")
-@RequestMapping(value="/")
 public class CommonController {
 	
 	@Resource(name="commonService")

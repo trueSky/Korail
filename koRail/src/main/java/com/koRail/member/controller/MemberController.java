@@ -29,7 +29,7 @@ import com.koRail.member.to.SetleBean;
 import com.koRail.member.to.TcktBean;
 
 @Controller(value="memberController")
-@RequestMapping("/member/")
+@RequestMapping("member")
 public class MemberController extends CommonController {
 	
 	@Resource(name="commonService")

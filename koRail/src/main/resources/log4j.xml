@@ -19,11 +19,6 @@
        <level value="WARN" />
    </logger>
    
-   <!-- ibatis -->
-   <logger name="org.apache.ibatis" additivity="false">
-       <level value="WARN" />
-   </logger>
-   
    <!-- log4jdbc --> <!-- SLQ Logging -->
    <logger name="jdbc.audit" additivity="false">
 		<level value="WARN" />
@@ -42,9 +37,7 @@
 	</logger> 
 
 	<!-- koRail -->
-	<logger name="com.koRail" additivity="false">
-       	<level value="DEBUG" />
-   	</logger>
+	<logger name="com.koRail" />
 
 	<root>
 		<level value="DEBUG"/>
