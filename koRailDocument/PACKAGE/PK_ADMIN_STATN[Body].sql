@@ -16,7 +16,7 @@
                     A.CMMN_CODE AS AREA			/*지역코드*/,
                 	B.STATN_NM	 				/*역 명*/,
                 	B.REGISTER	 				/*등록자*/,
-                	B.UPD_USER	 				/*수정자*/,
+                	B.UPDUSR	 				/*수정자*/,
 		        	B.RGSDE 	 				/*수정일*/,
 	        		B.UPDDE		 				/*수정일*/
             FROM	CMMN_CODE A  				/*공통코드*/,
@@ -30,7 +30,7 @@
                     A.CMMN_CODE AS AREA			/*지역코드*/,
                 	B.STATN_NM	 				/*역 명*/,
                 	B.REGISTER	 				/*등록자*/,
-                	B.UPD_USER	 				/*수정자*/,
+                	B.UPDUSR	 				/*수정자*/,
 		        	B.RGSDE 	 				/*수정일*/,
 	        		B.UPDDE		 				/*수정일*/
             FROM	CMMN_CODE A  				/*공통코드*/,
@@ -45,7 +45,7 @@
             		A.CMMN_CODE AS AREA			/*지역코드*/,
                 	B.STATN_NM	 				/*역 명*/,
                 	B.REGISTER	 				/*등록자*/,
-                	B.UPD_USER	 				/*수정자*/,
+                	B.UPDUSR	 				/*수정자*/,
 		        	B.RGSDE 	 				/*수정일*/,
 	        		B.UPDDE		 				/*수정일*/
             FROM	CMMN_CODE A  				/*공통코드*/,
@@ -65,7 +65,7 @@
                 SET_STATN(SET_STATN.COUNT).AREA_CODE := DATA.AREA;
                 SET_STATN(SET_STATN.COUNT).STATN_NM := DATA.STATN_NM;
                 SET_STATN(SET_STATN.COUNT).REGISTER := DATA.REGISTER;
-                SET_STATN(SET_STATN.COUNT).UPD_USER := DATA.UPD_USER;
+                SET_STATN(SET_STATN.COUNT).UPDUSR := DATA.UPDUSR;
                 SET_STATN(SET_STATN.COUNT).RGSDE := DATA.RGSDE;
                 SET_STATN(SET_STATN.COUNT).UPDDE := DATA.UPDDE;
 
@@ -80,7 +80,7 @@
                 SET_STATN(SET_STATN.COUNT).AREA_CODE := DATA.AREA;
                 SET_STATN(SET_STATN.COUNT).STATN_NM := DATA.STATN_NM;
                 SET_STATN(SET_STATN.COUNT).REGISTER := DATA.REGISTER;
-                SET_STATN(SET_STATN.COUNT).UPD_USER := DATA.UPD_USER;
+                SET_STATN(SET_STATN.COUNT).UPDUSR := DATA.UPDUSR;
                 SET_STATN(SET_STATN.COUNT).RGSDE := DATA.RGSDE;
                 SET_STATN(SET_STATN.COUNT).UPDDE := DATA.UPDDE;
 
@@ -95,7 +95,7 @@
                 SET_STATN(SET_STATN.COUNT).AREA_CODE := DATA.AREA;
                 SET_STATN(SET_STATN.COUNT).STATN_NM := DATA.STATN_NM;
                 SET_STATN(SET_STATN.COUNT).REGISTER := DATA.REGISTER;
-                SET_STATN(SET_STATN.COUNT).UPD_USER := DATA.UPD_USER;
+                SET_STATN(SET_STATN.COUNT).UPDUSR := DATA.UPDUSR;
                 SET_STATN(SET_STATN.COUNT).RGSDE := DATA.RGSDE;
                 SET_STATN(SET_STATN.COUNT).UPDDE := DATA.UPDDE;
 

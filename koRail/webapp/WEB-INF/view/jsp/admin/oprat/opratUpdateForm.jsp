@@ -15,6 +15,9 @@
    			var viewState2 = false;				/*viewState와 같은 역활이며 호실정보에 대한 상태이다*/
    			var detailOpratArray = new Array();	/* 상세운행일정 */
    			var roomArray = new Array();		/*호시렁보*/
+   			/* 기존데이터 */
+   			var oldGridBody = null;
+   			var oldGridBody2 = null;
    			
 	   		$(document).ready(function(){
 	   			/*Action style*/
@@ -25,6 +28,10 @@
 	   			
 				/* Set grid data */
 				doGridInit("all", true);
+				
+				/* 기존데이터 설정 */
+				oldGridBody = JSON.stringify($("#gridBody").getRowData());
+				oldGridBody2 = JSON.stringify($("#gridBody2").getRowData());
 	   		
 				/*엔터*/
 				$("#dTrainNo").keydown(function(e){
@@ -1125,42 +1132,43 @@
 						Type:"JSON",
 						data:{code:$("#trainCode").val(), srcDate1:$("#startTm").val(), srcDate2:$("#arvlTm").val()},
 						success : function(data) {
-							if(data.opratCount > 0){
-								alert("등록된 운행일정입니다.");
-							}else{
-								var array1 = $("#gridBody").getRowData();  /* 상세운행정보 */
-					   			var array2 = $("#gridBody2").getRowData(); /* 호실정보 */
-					   			var jsonArray = new Array();
+							var array1 = $("#gridBody").getRowData();  /* 상세운행정보 */
+				   			var array2 = $("#gridBody2").getRowData(); /* 호실정보 */
+				   			var jsonArray = new Array();
+				   			
+                            if(data.opratCount > 0 && oldGridBody == JSON.stringify(array1) && oldGridBody2 == JSON.stringify(array2)){
+                                alert("등록된 운행일정입니다.");
+                                return;
+                            }
 					   			
-								/* 그리드정보에 delete정보 적용 */
-					   			for(var v in detailOpratArray){
-					   				/* 경유지 */
-					   				if(detailOpratArray[v].state == "delete"){
-					   					array1.push(detailOpratArray[v]);
-					   				}
-					   			}
-					   			for(var v in roomArray){
-					   				/* 호실정보 */
-					   				if(roomArray[v].state == "delete"){
-					   					array2.push(roomArray[v]);
-					   				}
-					   			}
-					   			
-					   			/* JSON 변환 후 jsonArray 저장 */
-					   			jsonArray[0] = JSON.stringify({"detailOprat":array1});
-					   			jsonArray[1] = JSON.stringify({"room":array2});
-					   			
-					   			/* json에 값 설정 */
-					   			$("#json1").val(jsonArray[0]);
-					   			$("#json2").val(jsonArray[1]);
-					   			
-					   			if(confirm("이 운행정보를 수정하시겠습니까?")){
-					   				/*replace*/
-					   				$("input[name=fare]").val($("input[name=fare]").val().replace(/,/gi, ""));
-					   				
-					   				$("#updateForm").submit();
+							/* 그리드정보에 delete정보 적용 */
+				   			for(var v in detailOpratArray){
+				   				/* 경유지 */
+				   				if(detailOpratArray[v].state == "delete"){
+				   					array1.push(detailOpratArray[v]);
 				   				}
-							} /*if end*/
+				   			}
+				   			for(var v in roomArray){
+				   				/* 호실정보 */
+				   				if(roomArray[v].state == "delete"){
+				   					array2.push(roomArray[v]);
+				   				}
+				   			}
+				   			
+				   			/* JSON 변환 후 jsonArray 저장 */
+				   			jsonArray[0] = JSON.stringify({"detailOprat":array1});
+				   			jsonArray[1] = JSON.stringify({"room":array2});
+				   			
+				   			/* json에 값 설정 */
+				   			$("#json1").val(jsonArray[0]);
+				   			$("#json2").val(jsonArray[1]);
+				   			
+				   			if(confirm("이 운행정보를 수정하시겠습니까?")){
+				   				/*replace*/
+				   				$("input[name=fare]").val($("input[name=fare]").val().replace(/,/gi, ""));
+				   				
+				   				$("#updateForm").submit();
+			   				}
 						}, /*success end*/
 						error : function(request, status, error){
 							if(request.status == 401){

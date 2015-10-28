@@ -88,5 +88,3 @@ AS
         ER_MSG 	OUT VARCHAR2	/*에러 메세지*/
     );
 END PK_ADMIN_OPRAT;
-
-

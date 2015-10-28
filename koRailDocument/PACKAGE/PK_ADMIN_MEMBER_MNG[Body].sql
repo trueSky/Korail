@@ -61,5 +61,3 @@ AS
                 RETURN;
     END SP_DLT_MEMBER;
 END PK_ADMIN_MEMBER_MNG;
-
-

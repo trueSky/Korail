@@ -40,10 +40,14 @@
                             	AND		PRTCLR_ROOM_YN = 'Y'
                           	) AS PRTCLR_SEAT_Y_CO,
                           	(
-                            	SELECT	SUM(RESVE_SEAT_CO)
-                            	FROM	ROOM
-                           		WHERE	OPRAT_CODE = A.OPRAT_CODE
-                            	AND		PRTCLR_ROOM_YN = 'Y'
+                            	SELECT	COUNT(F.DETAIL_RESVE_CODE)
+  								FROM	OPRAT D,
+       									RESVE E,
+       									DETAIL_RESVE F
+ 								WHERE	D.OPRAT_CODE = E.OPRAT_CODE
+       							AND		E.RESVE_CODE = F.RESVE_CODE
+       							AND		D.OPRAT_CODE = A.OPRAT_CODE
+       							AND		F.ROOM_KND = 'ROOM_Y'
                     		) AS PRTCLR_ROOM_Y_CO,
                           	(
                             	SELECT	SUM(SEAT_CO)
@@ -52,10 +56,14 @@
                             	AND		PRTCLR_ROOM_YN = 'N'
                           	) AS PRTCLR_SEAT_N_CO,
                           	(
-                    			SELECT	SUM(RESVE_SEAT_CO)
-                            	FROM	ROOM
-                           		WHERE	OPRAT_CODE = A.OPRAT_CODE
-                                AND		PRTCLR_ROOM_YN = 'N'
+                    			SELECT	COUNT(F.DETAIL_RESVE_CODE)
+  								FROM	OPRAT D,
+       									RESVE E,
+       									DETAIL_RESVE F
+ 								WHERE	D.OPRAT_CODE = E.OPRAT_CODE
+       							AND		E.RESVE_CODE = F.RESVE_CODE
+       							AND		D.OPRAT_CODE = A.OPRAT_CODE
+       							AND		F.ROOM_KND = 'ROOM_N'
                           	) AS PRTCLR_ROOM_N_CO
                     FROM	OPRAT A,
                 			TRAIN B,
@@ -109,10 +117,14 @@
                             	AND		PRTCLR_ROOM_YN = 'Y'
                           	) AS PRTCLR_SEAT_Y_CO,
                           	(
-                            	SELECT	SUM(RESVE_SEAT_CO)
-                            	FROM	ROOM
-                           		WHERE	OPRAT_CODE = A.OPRAT_CODE
-                            	AND		PRTCLR_ROOM_YN = 'Y'
+                            	SELECT	COUNT(F.DETAIL_RESVE_CODE)
+  								FROM	OPRAT D,
+       									RESVE E,
+       									DETAIL_RESVE F
+ 								WHERE	D.OPRAT_CODE = E.OPRAT_CODE
+       							AND		E.RESVE_CODE = F.RESVE_CODE
+       							AND		D.OPRAT_CODE = A.OPRAT_CODE
+       							AND		F.ROOM_KND = 'ROOM_Y'
                     		) AS PRTCLR_ROOM_Y_CO,
                           	(
                             	SELECT	SUM(SEAT_CO)
@@ -121,10 +133,14 @@
                             	AND		PRTCLR_ROOM_YN = 'N'
                           	) AS PRTCLR_SEAT_N_CO,
                           	(
-                    			SELECT	SUM(RESVE_SEAT_CO)
-                            	FROM	ROOM
-                           		WHERE	OPRAT_CODE = A.OPRAT_CODE
-                                AND		PRTCLR_ROOM_YN = 'N'
+                    			SELECT	COUNT(F.DETAIL_RESVE_CODE)
+  								FROM	OPRAT D,
+       									RESVE E,
+       									DETAIL_RESVE F
+ 								WHERE	D.OPRAT_CODE = E.OPRAT_CODE
+       							AND		E.RESVE_CODE = F.RESVE_CODE
+       							AND		D.OPRAT_CODE = A.OPRAT_CODE
+       							AND		F.ROOM_KND = 'ROOM_N'
                           	) AS PRTCLR_ROOM_N_CO
                     FROM	OPRAT A,
                 			TRAIN B,
